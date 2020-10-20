@@ -11,33 +11,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <i86.h>
 
 #include "ff_libcga.h"
 
-void change_mode()
+void change_mode(char mode)
 {
-	//From the technical manual, info on modes available on the header.
+	//This uses the BIOS function to change modes
 
-	/* 	Changing Modes
+	union REGS in;
+	union REGS out;
 
-			1. Determine the mode of operation
-			2. Reset the video-enable bit in the mode-control register
-			3. Program the 6845 CRT Controller to select the mode
-			4. Program the mode-control and color-select register including re-enabling the video */
+	in.h.ah = 0x00;
+	in.h.al = mode;
 
-	//1. Determine the mode of operation
-
-	//I am assuming an unknown mode of operation in this function, so it will just
-	//get the adapter to a known mode everytime.
-
-	//2. Reset the video-enable bit in the mode-control register
-
-	outp(CGA_MODE_CONTROL_REGISTER, 0);
+	int86(0x10, &in, &out);
 }
+
+char __far *display_buffer = (char __far *)0xB8000;
 
 int main(int argc, char const *argv[])
 {
-	change_mode();
+	change_mode(CGA_MODE_GRAPHICS);
+
+	*display_buffer = 0xFF;
 
 	return 0;
 }

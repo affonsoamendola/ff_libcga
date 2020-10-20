@@ -12,7 +12,6 @@ $(bin) : $(source)
 .PHONY: clean run
 
 clean:
-	rm *.o
 	rm $(bin)
 	
 run:
