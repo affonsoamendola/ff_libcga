@@ -297,7 +297,11 @@
 #define CGA_6845_DATA_REGISTER			0x03D5 //See * above
 
 //Memory
-#define CGA_DEFAULT_DISPLAY_BUFFER		0x000B8000 //Default display buffer
+#define CGA_DEFAULT_DISPLAY_BUFFER		0xB0008000 //Default display buffer
+#define CGA_DEFAULT_DISPLAY_BUFFER_EVEN	CGA_DEFAULT_DISPLAY_BUFFER 
+	//Default display buffer location for even scanlines (graphics mode)
+#define CGA_DEFAULT_DISPLAY_BUFFER_ODDS	CGA_DEFAULT_DISPLAY_BUFFER + 0x00002000 
+	//Default display buffer location for even scanlines (graphics mode)
 
 //Most of the following are write-only, see 6845 Registers table above
 #define CGA_6845_HOR_TOTAL				0x00
@@ -336,7 +340,8 @@
 #define CGA_YELLOW   		0xE
 #define CGA_WHITE_HIGH		0xF
 
-#define CGA_BLINK			0x80
+#define CGA_BLINK_ON		0x1
+#define CGA_BLINK_OFF		0x0
 
 #define CGA_COLOR(fore, back) 	(back << 4) | fore
 
@@ -349,5 +354,6 @@
 #define CGA_MODE_GRAPHICS		0x04
 #define CGA_MODE_GRAPHICS_BW	0x05
 #define CGA_MODE_GRAPHICS_HR	0x06
+#define CGA_MODE_GRAPHICS_LR	0xFF
 
 #endif /* END FF_LIBCGA_H */

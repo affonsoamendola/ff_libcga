@@ -15,4 +15,4 @@ clean:
 	rm $(bin)
 	
 run:
-	dosbox ./$(bin)
+	dosbox-x -conf ./dosbox-x-cga.conf ./$(bin)
