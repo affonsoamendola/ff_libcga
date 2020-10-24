@@ -46,3 +46,8 @@ void cga_gfx_draw_byte(uint column_byte, uint line, char byte)
 
 	*(cga_display_buffer + ((line>>1)*40) + column_byte + (line & 1u) * 0x2000) = byte;
 }
+
+void cga_gfx_quit()
+{
+	
+}

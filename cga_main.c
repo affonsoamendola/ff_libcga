@@ -20,15 +20,17 @@
 
 #include "cga_utils.h"
 
-//Keeps track of current state on the board
-uint cga_current_mode = CGA_MODE_CO80;
-char cga_current_palette = 1;
-char cga_current_background_color = 0;
+#include "pcx.h"
 
-char __far *cga_display_buffer = (char __far *)CGA_DEFAULT_DISPLAY_BUFFER_EVEN;
+//Keeps track of current state on the board
+u_int cga_current_mode = CGA_MODE_CO80;
+u_int cga_current_palette = 1;
+u_int cga_current_background_color = 0;
+
+u_char __far *cga_display_buffer = (u_char __far *)CGA_DEFAULT_DISPLAY_BUFFER_EVEN;
 //End global state
 
-char __far *cga_get_pixel_byte_address(uint column, uint line)
+u_char __far *cga_get_pixel_byte_address(u_int column, u_int line)
 {
 	switch(cga_current_mode)
 	{
@@ -40,7 +42,7 @@ char __far *cga_get_pixel_byte_address(uint column, uint line)
 }
 
 //Returns the bits for the mode-select register
-char cga_mode_select_bits(uint mode, uint video_enable, uint blink)
+u_char cga_mode_select_bits(u_int mode, u_int video_enable, u_int blink)
 {
 	switch(mode)
 	{
@@ -51,14 +53,14 @@ char cga_mode_select_bits(uint mode, uint video_enable, uint blink)
 	}
 }
 
-void cga_set_blink(uint blink_to)
+void cga_set_blink(u_int blink_to)
 {
 
 	outp(0x03D8, cga_mode_select_bits(cga_current_mode, 1, blink_to));
 }
 
 //Changes graphics mode on the PC, using the BIOS
-void cga_change_mode(uint mode)
+void cga_change_mode(u_int mode)
 {
 	union REGS in;
 	union REGS out;
@@ -108,7 +110,7 @@ void cga_change_mode(uint mode)
 }
 
 //Generic draw pixel function
-void cga_draw_pixel(uint column, uint line, char color)
+void cga_draw_pixel(u_int column, u_int line, u_char color)
 {
 	//If mode is graphics (320x200) call its function;
 	switch(cga_current_mode)
@@ -122,25 +124,21 @@ void cga_draw_pixel(uint column, uint line, char color)
 	}
 }
 
+void cga_quit()
+{
+	cga_lr_quit();
+	cga_gfx_quit();
+}
+
 int main(int argc, char const *argv[])
 {
-	cga_change_mode(CGA_MODE_GRAPHICS_LR);
+	PCX_FONT font;
 
-	cga_lr_draw_pixel(0, 0, 0x1);
-	cga_lr_draw_pixel(1, 1, 0x2);
-	cga_lr_draw_pixel(2, 2, 0x3);
-	cga_lr_draw_pixel(3, 3, 0x4);
-	cga_lr_draw_pixel(4, 4, 0x5);
-	cga_lr_draw_pixel(5, 5, 0x6);
-	cga_lr_draw_pixel(6, 6, 0x7);
-	cga_lr_draw_pixel(7, 7, 0x8);
-	cga_lr_draw_pixel(8, 8, 0x9);
-	cga_lr_draw_pixel(9, 9, 0xA);
-	cga_lr_draw_pixel(10, 10, 0xB);
-	cga_lr_draw_pixel(11, 11, 0xC);
-	cga_lr_draw_pixel(12, 12, 0xD);
-	cga_lr_draw_pixel(13, 13, 0xE);
-	cga_lr_draw_pixel(14, 14, 0xF);
+	pcx_load_font("font.pcx", 6, 6, &font);
+
+
+
+	pcx_unload_font(font);
 
 	getch();
 	return 0;

@@ -7,22 +7,21 @@
 #include "cga_board_state.h"
 
 //All Graphics Mode (160x100x16) specific code goes on this file.
-
-char __far *cga_lr_get_pixel_byte_address(uint column, uint line)
+u_char __far *cga_lr_get_pixel_byte_address(u_int column, u_int line)
 {
 
 	return cga_display_buffer + (line * 160) + ((column >> 1) * 2) + 1;
 }
 
 //Graphics mode draw pixel
-void cga_lr_draw_pixel(uint column, uint line, char color)
+void cga_lr_draw_pixel(u_int column, u_int line, u_char color)
 {
-	char __far *current_pixel_address = cga_lr_get_pixel_byte_address(column, line);
+	u_char __far *current_pixel_address = cga_lr_get_pixel_byte_address(column, line);
 
-	char current_value = *current_pixel_address;
+	u_char current_value = *current_pixel_address;
  	
-	char low_nibble = current_value & 0x0F;
-	char high_nibble = current_value & 0xF0;
+	u_char low_nibble = current_value & 0x0F;
+	u_char high_nibble = current_value & 0xF0;
 
 	if(column & 1)
 	{
@@ -34,4 +33,8 @@ void cga_lr_draw_pixel(uint column, uint line, char color)
 	}
 
 	*current_pixel_address = high_nibble | low_nibble;
+}
+
+void cga_lr_quit()
+{
 }
