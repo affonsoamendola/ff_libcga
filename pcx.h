@@ -11,7 +11,7 @@ typedef struct PCX_IMAGE_
 {
 	u_int w;
 	u_int h;
-	u_char *content;
+	u_char __far *content;
 } PCX_IMAGE;
 
 u_int pcx_load(const char *filename, PCX_IMAGE* image);

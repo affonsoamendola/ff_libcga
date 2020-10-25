@@ -13,14 +13,16 @@
 #include <conio.h>
 #include <i86.h>
 
+#include <libi86/string.h>
+
 #include "cga_main.h"
 
 #include "cga_gfx_mode.h"
+
 #include "cga_lr_mode.h"
+#include "cga_lr_image.h"
 
 #include "cga_utils.h"
-
-#include "pcx.h"
 
 //Keeps track of current state on the board
 u_int cga_current_mode = CGA_MODE_CO80;
@@ -132,15 +134,19 @@ void cga_quit()
 
 int main(int argc, char const *argv[])
 {
-	PCX_FONT font;
+	CGA_LR_IMAGE image;
 
-	pcx_load_font("font.pcx", 6, 6, &font);
+	cga_lr_load_image("title.pcx", &image);
 
-
-
-	pcx_unload_font(font);
-
+	printf("REDY\n");
 	getch();
+
+	cga_change_mode(CGA_MODE_GRAPHICS_LR);
+
+	_fmemcpy(cga_display_buffer, image.content, 160*100);
+
+	cga_lr_unload_image(image);
+
 	return 0;
 }
 

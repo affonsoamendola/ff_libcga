@@ -2,6 +2,8 @@
 #include <conio.h>
 #include <stdlib.h>
 
+#include <dos.h>
+
 #include "pcx.h"
 
 u_int pcx_load(const char *filename, PCX_IMAGE* image_out)
@@ -28,7 +30,15 @@ u_int pcx_load(const char *filename, PCX_IMAGE* image_out)
 
 		fseek(f, 128, SEEK_SET); //Goto start of image
 
-		image.content = (u_char*)malloc(image.w * image.h);
+		u_int segment = 0;
+
+		if(_dos_allocmem((image.w * image.h) / 16, &segment) != 0)
+		{
+			printf("MEMORY ALLOCATION ERROR.\n");
+			exit(-1);
+		}
+
+		image.content = (u_char __far *)MK_FP(segment, 0);
 
 		u_char byte;
 		u_int run_count;
@@ -59,6 +69,7 @@ u_int pcx_load(const char *filename, PCX_IMAGE* image_out)
 				for(u_int run = 0; run < run_count && index < line_size; run++)
 				{
 					image.content[index + line_size * l] = run_value;
+
 					index++;
 				}
 
@@ -77,6 +88,6 @@ void pcx_unload(PCX_IMAGE image)
 {
 	if(image.content != NULL)
 	{
-		free(image.content);
+		_dos_freemem(FP_SEG(image.content));
 	}
 }
